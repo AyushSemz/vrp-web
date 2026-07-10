@@ -8,6 +8,7 @@ import DatasetSelector from "../components/DatasetSelector";
 import OptimizeButton from "../components/OptimizeButton";
 import StatsCard from "../components/StatsCard";
 import RouteCard from "../components/RouteCard";
+import RouteMap from "../components/RouteMap";
 
 function Home() {
   const [dataset, setDataset] = useState("B/B-n35-k5.vrp");
@@ -65,6 +66,9 @@ function Home() {
             ))}
           </div>
         </div>
+      )}
+      {result && (
+        <RouteMap locations={result.locations} routes={result.routes} />
       )}
     </div>
   );

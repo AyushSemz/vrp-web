@@ -36,6 +36,15 @@ def optimize(dataset_name):
     routes = common.get_routes(solution)
     distance = common.compute_solution(problem, solution)
 
+    locations = [
+    {
+        "id": i,
+        "x": float(coord[0]),
+        "y": float(coord[1])
+    }
+    for i, coord in enumerate(problem["locations"])
+    ]
+
     return {
         "status": "success",
         "dataset": dataset_name,
@@ -43,5 +52,6 @@ def optimize(dataset_name):
         "vehicles": len(routes),
         "iterations": 200,
         "execution_time": round(execution_time, 2),
-        "routes": [route.tolist() for route in routes]
+        "routes": [route.tolist() for route in routes],
+        "locations": locations
     }
