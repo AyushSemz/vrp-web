@@ -1,8 +1,13 @@
+import time
+
 from algorithm.bee_colony import BeeColony
 from utils import tools, common
 
 
 def optimize(dataset_name):
+    # Start timer
+    start_time = time.perf_counter()
+
     # Load benchmark
     problem = tools.get_problem(f"benchmarks/{dataset_name}")
 
@@ -16,7 +21,7 @@ def optimize(dataset_name):
         search_limit=50
     )
 
-    # Solve
+    # Run optimization
     solution = abc.solve(
         alpha=0.1,
         delta=0.01,
@@ -24,11 +29,19 @@ def optimize(dataset_name):
         gen_betta=25
     )
 
+    # End timer
+    execution_time = time.perf_counter() - start_time
+
     # Compute results
     routes = common.get_routes(solution)
     distance = common.compute_solution(problem, solution)
 
     return {
-        "distance": float(distance),
+        "status": "success",
+        "dataset": dataset_name,
+        "distance": round(float(distance), 2),
+        "vehicles": len(routes),
+        "iterations": 200,
+        "execution_time": round(execution_time, 2),
         "routes": [route.tolist() for route in routes]
     }
