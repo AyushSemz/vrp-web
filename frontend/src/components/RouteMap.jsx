@@ -26,7 +26,7 @@ function RouteMap({ locations, routes }) {
   const getNode = (id) => locations.find((l) => l.id === id);
 
   return (
-    <div className="bg-slate-900 rounded-2xl mt-12 p-6 shadow-xl">
+    <div className="w-full bg-slate-900 rounded-2xl mt-12 p-6 shadow-xl">
       <h2 className="text-2xl font-bold text-white mb-6">
         Route Visualization
       </h2>
@@ -48,14 +48,12 @@ function RouteMap({ locations, routes }) {
       </div>
 
       <svg
-        width={width}
-        height={height}
-        className="bg-gradient-to-br from-slate-950 to-slate-900 rounded-xl border border-slate-700"
+        viewBox={`0 0 ${width} ${height}`}
+        className="w-full h-auto max-h-[75vh] bg-gradient-to-br from-slate-950 to-slate-900 rounded-xl border border-slate-700"
       >
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-
             <feMerge>
               <feMergeNode in="coloredBlur" />
               <feMergeNode in="SourceGraphic" />
@@ -64,16 +62,13 @@ function RouteMap({ locations, routes }) {
         </defs>
 
         {/* Draw Routes */}
-
         {routes.map((route, index) => {
           const depot = getNode(0);
-
           const points = [depot, ...route.map(getNode), depot];
 
           return (
-            <>
+            <g key={`route-group-${index}`}>
               <path
-                key={index}
                 d={
                   "M " +
                   points.map((p) => `${scaleX(p.x)} ${scaleY(p.y)}`).join(" L ")
@@ -90,7 +85,7 @@ function RouteMap({ locations, routes }) {
                   animation: "flow 1.2s linear infinite",
                 }}
               />
-              <circle r="6" fill={COLORS[index]}>
+              <circle r="6" fill={COLORS[index % COLORS.length]}>
                 <animateMotion
                   dur={`${8 + index}s`}
                   repeatCount="indefinite"
@@ -103,12 +98,11 @@ function RouteMap({ locations, routes }) {
                   }
                 />
               </circle>
-            </>
+            </g>
           );
         })}
 
         {/* Draw Nodes */}
-
         {locations.map((node) => (
           <g key={node.id}>
             <circle
@@ -118,7 +112,6 @@ function RouteMap({ locations, routes }) {
               fill={node.id === 0 ? "#FFD700" : "#F8FAFC"}
               className="hover:r-7 transition-all duration-200 cursor-pointer"
             />
-
             <text
               x={scaleX(node.x) + 8}
               y={scaleY(node.y) - 8}
